@@ -53,6 +53,9 @@ var http = {
     postJson: function(url, json, headers, success, failure) {
         return exec(success, failure, "CordovaHttpPlugin", "postJson", [url, json, headers]);
     },
+    putJson: function(url, json, headers, success, failure) {
+        return exec(success, failure, "CordovaHttpPlugin", "putJson", [url, json, headers]);
+    },
     get: function(url, params, headers, success, failure) {
         headers = mergeHeaders(this.headers, headers);
         return exec(success, failure, "CordovaHttpPlugin", "get", [url, params, headers]);
@@ -109,7 +112,7 @@ if (typeof angular !== "undefined") {
     angular.module('cordovaHTTP', []).factory('cordovaHTTP', function($timeout, $q) {
         function makePromise(fn, args, async) {
             var deferred = $q.defer();
-            
+
             var success = function(response) {
                 if (async) {
                     $timeout(function() {
@@ -119,7 +122,7 @@ if (typeof angular !== "undefined") {
                     deferred.resolve(response);
                 }
             };
-            
+
             var fail = function(response) {
                 if (async) {
                     $timeout(function() {
@@ -129,15 +132,15 @@ if (typeof angular !== "undefined") {
                     deferred.reject(response);
                 }
             };
-            
+
             args.push(success);
             args.push(fail);
-            
+
             fn.apply(http, args);
-            
+
             return deferred.promise;
         }
-        
+
         var cordovaHTTP = {
             getBasicAuthHeader: http.getBasicAuthHeader,
             useBasicAuth: function(username, password) {
@@ -160,6 +163,9 @@ if (typeof angular !== "undefined") {
             },
             postJson: function(url, json, headers) {
                 return makePromise(http.postJson, [url, json, headers], true);
+            },
+            putJson: function(url, json, headers) {
+                return makePromise(http.putJson, [url, json, headers], true);
             },
             get: function(url, params, headers) {
                 return makePromise(http.get, [url, params, headers], true);
