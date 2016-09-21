@@ -19,10 +19,10 @@ import com.github.kevinsawicki.http.HttpRequest.HttpRequestException;
  
 public class CordovaHttpPostJson extends CordovaHttp implements Runnable {
     
-    public CordovaHttpPostJson(String urlString, JSONObject jsonObj, Map<String, String> headers, CallbackContext callbackContext) {
-        super(urlString, jsonObj, headers, callbackContext);
+    public CordovaHttpPostJson(String urlString, Object jsonObj, Map<String, String> headers, CallbackContext callbackContext) {
+        super(urlString, jsonObj,headers, callbackContext);
     }
-    
+
     @Override
     public void run() {
         try {

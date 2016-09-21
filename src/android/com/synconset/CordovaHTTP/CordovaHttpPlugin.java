@@ -73,7 +73,19 @@ public class CordovaHttpPlugin extends CordovaPlugin {
             cordova.getThreadPool().execute(post);
         } else if (action.equals("postJson")) {
             String urlString = args.getString(0);
-            JSONObject jsonObj = args.getJSONObject(1);
+            Object jsonObj;
+            try {
+                jsonObj = args.getJSONObject(1);
+            } catch(Exception e1) {
+                try {
+                    jsonObj = args.getJSONArray(1);
+                } catch (Exception e2) {
+                    JSONObject response = new JSONObject();
+                    response.put("message", "Couldnt convert to JSON or JSONARRAY! " + e1.getMessage() + ", " + e2.getMessage());
+                    callbackContext.error(response);
+                    return false;
+                }
+            }
             JSONObject headers = args.getJSONObject(2);
             HashMap<String, String> headersMap = this.getStringMapFromJSONObject(headers);
             CordovaHttpPostJson postJson = new CordovaHttpPostJson(urlString, jsonObj, headersMap, callbackContext);
